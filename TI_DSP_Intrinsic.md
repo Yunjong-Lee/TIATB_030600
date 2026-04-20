@@ -1,5 +1,3 @@
-
-
 # TI DSP Intrinsic for TMS320C6000, c66x   
 
 [ 1. _amem8_f2](#-amem8-f2)  
@@ -204,7 +202,26 @@ float2_t c_dmpysp(float2_t a, float2_t b)
 ```
 
 # __amem4  
+- 4바이트(32비트) 데이터를 정렬 제한 없이(Unaligned) 읽거나 쓸 때 사용하는 내장 함수  
 
+```
+#include <string.h>
+#include <stdint.h>
+
+// __amem4를 이용한 읽기(Load)
+uint32_t c_amem4_load(void *ptr) 
+{
+    uint32_t val;
+    memcpy(&val, ptr, sizeof(uint32_t));
+    return val;
+}
+
+// __amem4를 이용한 쓰기(Store)
+void c_amem4_store(void *ptr, uint32_t val) 
+{
+    memcpy(ptr, &val, sizeof(uint32_t));
+}
+```
 
 
 
