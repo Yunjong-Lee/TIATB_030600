@@ -3,11 +3,15 @@
 # Index
 
 [1. CFG 4 Vital-sign estimation](#1-CFG-4-Vital-sign-estimation)   
+
 [2. Parameters](#2-Parameters)   
 [ . 2.1. config Params](#2-1-config-parameter)   
 [ . 2.2. Function & parameter](#2-2-Function-and-parameter)   
-[3. code debugging](#3-code-debugging) 
-[Papers](#Papers)
+
+[3. code debugging](#3-code-debugging)  
+
+[Papers](#Papers)  
+
 [References](#References)  
   
 ---  
