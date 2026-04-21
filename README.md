@@ -4,8 +4,8 @@
 
 # INDEX  
 [1. 분류](#-분류)  
-[&ensp; 1-1. 발생 현상에 따른 분류](#-발생-현상에-따른-분류)  
-[&ensp; 1-2. FFT 값 검토](#-FFT-값-검토)  
+[&ensp; A. event case](#A-event-case)  
+[&ensp; B. considering heartRateEst_FFT value](#B-considering-heartRateEst_FFT-value)  
 
 [2. output values](#-output-values)  
 [&ensp; A. heartRateEst_HarmonicEnergy](#A-heartRateEst-HarmonicEnergy)  
@@ -18,14 +18,14 @@
 ---
 
 # 분류    
-## 1. 발생 현상에 따른 분류
+## A. event case
 ※ 현상이 Outlier/측정값이 고정되어 안 움직이는 경우, 증상에 따라 지표 중 우선순위가 달라짐.
    1. 에너지 조건: heartRateEst_HarmonicEnergy > Threshold
    2. 안정성 조건: heartRateEst_FFT와 heartRateEst_xCorr의 차이가 5bpm 이내
    3. 신뢰도 점수: confidenceMetricHeartOut > Threshold
    4. 연속성 조건: 현재 값과 직전 평균값의 차이가 합리적 범위 내
 
-## 2. FFT 값 검토
+## B. considering heartRateEst_FFT value
   - 1. 호흡 신호 대비 심박 신호의 비율(SNR)  
     + 심박수는 Breathing 신호의 고조파에 묻히는 경우가 많다. 호흡 에너지(breathingEst_FFT)가 너무 강하면 심박 FFT 값은 왜곡된다(Breath Rate 관련 Clutter 여부)  
 
