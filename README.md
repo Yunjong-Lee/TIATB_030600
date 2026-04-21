@@ -19,11 +19,11 @@
 
 # 분류    
 ## A. event case
-※ 현상이 Outlier/측정값이 고정되어 안 움직이는 경우, 증상에 따라 지표 중 우선순위가 달라짐.
-   1. 에너지 조건: heartRateEst_HarmonicEnergy > Threshold
-   2. 안정성 조건: heartRateEst_FFT와 heartRateEst_xCorr의 차이가 5bpm 이내
-   3. 신뢰도 점수: confidenceMetricHeartOut > Threshold
-   4. 연속성 조건: 현재 값과 직전 평균값의 차이가 합리적 범위 내
+   1. 에너지 조건: heartRateEst_HarmonicEnergy > Threshold  
+   2. 안정성 조건: heartRateEst_FFT와 heartRateEst_xCorr의 차이가 5bpm 이내  
+   3. 신뢰도 점수: confidenceMetricHeartOut > Threshold  
+   4. 연속성 조건: 현재 값과 직전 평균값의 차이가 합리적 범위 내 
+   ※ 현상이 Outlier/측정값이 고정되어 안 움직이는 경우, 증상에 따라 지표 중 우선순위가 달라짐.  
 
 ## B. considering heartRateEst_FFT value
   - 1. 호흡 신호 대비 심박 신호의 비율(SNR)  
