@@ -8,7 +8,7 @@
 [&ensp; B. considering heartRateEst_FFT value](#B-considering-heartRateEst_FFT-value)  
 
 [2. output values](#-output-values)  
-[&ensp; A. heartRateEst_HarmonicEnergy](#A-heartRateEst-HarmonicEnergy)  
+[&ensp; A. heartRateEst_HarmonicEnergy](#A-heartRateEst_HarmonicEnergy)  
 [&ensp; B. heartRateEst_FFT_4Hz](#B-heartRateEst_FFT_4Hz)  
 [&ensp; C. confidenceMetricHeartOut](#C-confidenceMetricHeartOut)  
 [&ensp; D. heartRateEst_xCorr](#D-heartRateEst_xCorr)  
@@ -50,7 +50,7 @@
 ---
 
 # output values  
-## A. heartRateEst_HarmonicEnergy
+## A. heartRateEst_HarmonicEnergy  
 - 심장 박동 신호의 Harmonics 성분들이 가진 에너지의 총합(심박수 추정 신뢰도 판단 지표)
   ※ 에너지 중 규칙적인 고조파 성분이 얼마나 되는지 확인  
 - 특징
