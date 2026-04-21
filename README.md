@@ -3,21 +3,21 @@
 # fVS+rOD, output value check
 
 # INDEX  
-[1. 분류](#-분류)  
-[&ensp; A. event case](#A-event-case)  
-[&ensp; B. considering heartRateEst_FFT value](#B-considering-heartRateEst_FFT-value)  
+1. [Case](#Case)  
+&ensp; A. [event case](#A-event-case)  
+&ensp; B. [considering heartRateEst_FFT value](#B-considering-heartRateEst_FFT-value)  
 
-[2. output values](#-output-values)  
-[&ensp; A. heartRateEst_HarmonicEnergy](#A-heartRateEst_HarmonicEnergy)  
-[&ensp; B. heartRateEst_FFT_4Hz](#B-heartRateEst_FFT_4Hz)  
-[&ensp; C. confidenceMetricHeartOut](#C-confidenceMetricHeartOut)  
-[&ensp; D. heartRateEst_xCorr](#D-heartRateEst_xCorr)  
-[&ensp; E. sumEnergyHeartWfm](#E-sumEnergyHeartWfm)  
-[&ensp; F. confidenceMetricHeartOut](#F-confidenceMetricHeartOut)  
+2. [output values](#output-values)  
+&ensp; A. [heartRateEst_HarmonicEnergy](#A-heartRateEst_HarmonicEnergy)  
+&ensp; B. [heartRateEst_FFT_4Hz](#B-heartRateEst_FFT_4Hz)  
+&ensp; C. [confidenceMetricHeartOut](#C-confidenceMetricHeartOut)  
+&ensp; D. [heartRateEst_xCorr](#D-heartRateEst_xCorr)  
+&ensp; E. [sumEnergyHeartWfm](#E-sumEnergyHeartWfm)  
+&ensp; F. [confidenceMetricHeartOut](#F-confidenceMetricHeartOut)  
 
 ---
 
-# 분류    
+# Case    
 ## A. event case
    1. 에너지 조건: heartRateEst_HarmonicEnergy > Threshold  
    2. 안정성 조건: heartRateEst_FFT와 heartRateEst_xCorr의 차이가 5bpm 이내  
