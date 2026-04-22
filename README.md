@@ -31,23 +31,23 @@
   + 심박수는 Breathing 신호의 고조파에 묻히는 경우가 많다. 호흡 에너지(breathingEst_FFT)가 너무 강하면 심박 FFT 값은 왜곡된다(Breath Rate 관련 Clutter 여부)  
 ※ 현재 display되는 HR 값
 
-  - 2. Phase Unwrapping Quality (신호 파형 상태):
-    + FFT 전 단계의 Phase 신호가 깨끗한지 확인 필요  
-       (target이 미세한 움직임이 있다면 위상 신호 자체가 튀어 FFT는 무의미)
-    ※ heartRateEst_HarmonicEnergy와 confidenceMetricHeartOut이 동시에 낮은데 heartRateEst_FFT만 높게 나온다면, 결과 값은 Artifact  
-    ※ heartRateEst_FFT 값은 일정한데 Confidence만 요동치는 상황인가? 아니면 값이 아예 엉뚱한 대역으로 튀는 상황인가?  
+### Phase Unwrapping Quality (신호 파형 상태)
+- FFT 전 단계의 Phase 신호가 깨끗한지 확인 필요  
+  (target이 미세한 움직임이 있다면 위상 신호 자체가 튀어 FFT는 무의미)
+  ※ heartRateEst_HarmonicEnergy와 confidenceMetricHeartOut이 동시에 낮은데 heartRateEst_FFT만 높게 나온다면, 결과 값은 Artifact  
+  ※ heartRateEst_FFT 값은 일정한데 Confidence만 요동치는 상황인가? 아니면 값이 아예 엉뚱한 대역으로 튀는 상황인가?  
 
-  - 3. sumAllSpectralEnergy (=sumEnergyHeartWfm) 대비 비율 (SNR)
-    + 심박수 관련 처리 범위 내에서의 전체 에너지
-    + 심박 대역의 에너지가 높고, 전체 노이즈(Clutter) 에너지도 같이 높으면 신뢰도가 낮다.
-    + 전체 에너지 대비 심박 고조파 에너지 비율 계산
-      * heartRateEst_HarmonicEnergy / sumAllSpectralEnergy
-        (이 비율이 낮다면 현재 환경에 움직임 노이즈가 너무 많다는 뜻)
+### sumAllSpectralEnergy (=sumEnergyHeartWfm) 대비 비율 (SNR)  
+- 심박수 관련 처리 범위 내에서의 전체 에너지  
+- 심박 대역의 에너지가 높고, 전체 노이즈(Clutter) 에너지도 같이 높으면 신뢰도가 낮다.  
+- 전체 에너지 대비 심박 고조파 에너지 비율 계산  
+  $Rate = \frac{heartRateEst_HarmonicEnergy} {sumAllSpectralEnergy}$  
+  + 비율이 낮으면, 현재 환경에 움직임 or 노이즈가 많다는 뜻  
 
-  - 4. numMovingAvgFilter (지수 이동 평균의 편차)
-    + 심박수는 생체 특성상 1~2초 사이에 급격한 점프는 발생하기 어렵다(예: 70bpm → 110bpm으로 점프).
-    + 직전 프레임들의 평균값과 현재 FFT 값의 차이 (Delta)
-      * delta > threshold(예: 10bpm) : 결과 값의 신뢰도를 낮춘다 (이전 값을 유지 or confidenceMetric을 강제로 낮추는 로직 필요)
+### numMovingAvgFilter (지수 이동 평균의 편차)  
+- 심박수는 생체 특성상 1~2초 사이에 급격한 점프는 발생하기 어렵다(예: 70bpm → 110bpm으로 점프).  
+- 직전 프레임들의 평균값과 현재 FFT 값의 차이 (Delta)  
+  * delta > threshold(예: 10bpm) : 결과 값의 신뢰도를 낮춘다 (이전 값을 유지 or confidenceMetric을 강제로 낮추는 로직 필요)  
 
 ---
 
