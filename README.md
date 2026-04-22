@@ -98,10 +98,19 @@
 - $SNR_{Heart}$ 비율과 Peak의 선명도를 종합해 최종 점수 도출.
 
 ## G. outputFilterBreathOut, outputFilterHeartOut
-- time domain의 신호임
+- doppler input 데이터 위상을 추출(atan) >> unwrap >> impulse noise 제거를 거진 결과 값(phaseUsedComputation)을 IIR 필터링 시킨 출력값 (time domain의 신호임)
+  + 필터 출력 신호의 특성
+    * outputFilterBreathOut: 호흡 대역(약 0.1~0.5Hz)만 통과시킨 신호입니다. 진폭이 크며 파형이 완만
+    * utputFilterHeartOut: 심박 대역(약 0.8~2.0Hz)을 통과시킨 신호입니다. 호흡에 비해 진폭이 매우 작으며 미세한 진동 형태
 - 이 두 신호를 기반으로 호흡과 심박 추출
 - in example에서,
-  + outputFilterHeartOut은 ... 정리 중(4/22)...
+  + outputFilterHeartOut은
+    * cardizc wfm을 위한 circularBuffer(obj_VS->pVitalSigns_Breath_circularBuffer)를 구성하는데 사용
+    * buffer 구성이 완료되면 각각의 buffer data에 scale factor를 곱한 결과 값을 obj_VS->pVitalSignsBuffer_Cplx buffer로 재구성
+    * buffer(obj_VS->pVitalSignsBuffer_Cplx) data를 입력으로 받아 FFT 수행
+    * FFT의 출력은 obj_VS->pVitalSigns_SpectrumCplx
+      ※ FFT 전 step에서 heartRateEst_peakCount/breathingRateEst_peakCount를 계산하는데, 두 값은 최종적으로 사용되지 않음
+   
 
 
 
