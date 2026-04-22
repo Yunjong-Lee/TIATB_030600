@@ -97,6 +97,11 @@
 ## F. confidenceMetricHeartOut
 - $SNR_{Heart}$ 비율과 Peak의 선명도를 종합해 최종 점수 도출.
 
+## G. outputFilterBreathOut, outputFilterHeartOut
+- time domain의 신호임
+- 이 두 신호를 기반으로 호흡과 심박 추출
+- in example에서,
+  + outputFilterHeartOut은 ... 정리 중(4/22)...
 
 
 
