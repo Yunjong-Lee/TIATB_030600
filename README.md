@@ -5,7 +5,7 @@
 # INDEX  
 1. [Case](#Case)  
 &ensp; A. [event case](#A-event-case)  
-&ensp; B. [considering heartRateEst_FFT value](#B-considering-heartRateEst_FFT-value)  
+&ensp; B. [considering value](#B-considering-value)  
 
 2. [output values](#output-values)  
 &ensp; A. [heartRateEst_HarmonicEnergy](#A-heartRateEst_HarmonicEnergy)  
@@ -25,9 +25,11 @@
    4. 연속성 조건: 현재 값과 직전 평균값의 차이가 합리적 범위 내 
    ※ 현상이 Outlier/측정값이 고정되어 안 움직이는 경우, 증상에 따라 지표 중 우선순위가 달라짐.  
 
-## B. considering heartRateEst_FFT value
-  - 1. 호흡 신호 대비 심박 신호의 비율(SNR)  
-    + 심박수는 Breathing 신호의 고조파에 묻히는 경우가 많다. 호흡 에너지(breathingEst_FFT)가 너무 강하면 심박 FFT 값은 왜곡된다(Breath Rate 관련 Clutter 여부)  
+## B. considering value
+### heartRateEst_FFT
+- 호흡 신호 대비 심박 신호의 비율(SNR)
+  + 심박수는 Breathing 신호의 고조파에 묻히는 경우가 많다. 호흡 에너지(breathingEst_FFT)가 너무 강하면 심박 FFT 값은 왜곡된다(Breath Rate 관련 Clutter 여부)  
+※ 현재 display되는 HR 값
 
   - 2. Phase Unwrapping Quality (신호 파형 상태):
     + FFT 전 단계의 Phase 신호가 깨끗한지 확인 필요  
