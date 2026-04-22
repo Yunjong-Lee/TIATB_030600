@@ -29,7 +29,6 @@
 ### heartRateEst_FFT vs breathingRateEst_FFT
 - 호흡 신호 대 심박 신호의 비율(SNR)
   + 심박수는 Breathing 신호의 고조파에 묻히는 경우가 많다. 호흡 에너지(breathingEst_FFT)가 너무 강하면 심박 FFT 값은 왜곡된다(Breath Rate 관련 Clutter 여부)  
-※ 현재 display되는 HR 값
 
 ### Phase Unwrapping Quality (신호 파형 상태)
 - FFT 전 단계의 Phase 신호가 깨끗한지 확인 필요  
