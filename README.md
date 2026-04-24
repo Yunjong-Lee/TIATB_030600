@@ -32,7 +32,7 @@
 
 ### Phase Unwrapping Quality (신호 파형 상태)
 - FFT 전 단계의 Phase 신호가 깨끗한지 확인 필요  
-  (target이 미세한 움직임이 있다면 위상 신호 자체가 튀어 FFT는 무의미)
+  (target이 미세한 움직임이 있다면 위상 신호 자체가 튀어 FFT는 무의미)  
   ※ heartRateEst_HarmonicEnergy와 confidenceMetricHeartOut이 동시에 낮은데 heartRateEst_FFT만 높게 나온다면, 결과 값은 Artifact  
   ※ heartRateEst_FFT 값은 일정한데 Confidence만 요동치는 상황인가? 아니면 값이 아예 엉뚱한 대역으로 튀는 상황인가?  
 
@@ -95,9 +95,9 @@
 
 ## E. sumEnergyHeartWfm
 - heartRateEst_FFT가 불안정할 때, "노이즈를 포함한 전체 에너지"의 합과의 비율 확인 필요  
-  ※ 심박 대역에 에너지가 충분히 들어오는지 확인 (사람이 있는지 확인)
+  ※ 심박 대역에 에너지가 충분히 들어오는지 확인 (사람이 있는지 확인)  
   $SNR_{Heart} = \displaystyle \frac{heartRateEst\_HarmonicEnergy}{sumEnergyHeartWfm}$  
-  + 비율이 높을 때: 신호 중에서 심박 고조파 성분이 지배적(FFT 값 신뢰도가 높음)
+  + 비율이 높을 때: 신호 중에서 심박 고조파 성분이 지배적(FFT 값 신뢰도가 높음)  
   + 비율이 낮을 때: 신호에 Clutter나 Motion이 섞여 있어 심박 성분이 묻힌 상태(FFT 값 제거 필요)  
   + heartRateEst_HarmonicEnergy : 필터(HPF or BPF)를 거친 후의 심박 Waveform 전체 에너지 ("유효한 성분"의 합)  
   + sumEnergyHeartWfm : "노이즈를 포함한 전체 에너지"의 합    
