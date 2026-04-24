@@ -70,7 +70,11 @@
 [^VS_PARAMS_2]: [https://my.clevelandclinic.org](https://my.clevelandclinic.org/health/articles/10881-vital-signs)
 [^VS_PARAMS_3]: [https://www.researchgate.net](https://www.researchgate.net/publication/364141837_Vital_Sign_Detection_via_Angular_and_Range_Measurements_with_mmWave_MIMO_Radars_Algorithms_and_Trials)
 
-## B. heartRateEst_FFT_4Hz
+## B_1. heartRateEst_FFT
+  - 심박 측정 가능 대역(보통 0.6Hz ~ 4.0Hz)에서 FFT를 수행하여 가장 강한 에너지를 가진 주파수 피크를 심박수로 변환한 값
+  - 
+## B_2. heartRateEst_FFT_4Hz
+  - 4Hz(240 BPM)까지의 고주파 대역을 포함하여 계산된 추정치
   - 용도: 고차 고조파(Harmonics) 확인.
   - 의미: 기본 심박수 대역(약 1~2Hz) 외에 4Hz 부근의 에너지를 확인하여, 현재 잡힌 피크가 실제 심장 박동의 배수 성분인지 아니면 외부 진동 노이즈인지 교차 검증할 때 사용
   - 확인 사항
