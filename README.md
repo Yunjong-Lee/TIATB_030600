@@ -15,6 +15,7 @@
 &ensp; E. [sumEnergyHeartWfm](#E-sumEnergyHeartWfm)  
 &ensp; F. [confidenceMetricHeartOut](#F-confidenceMetricHeartOut)  
 
+3. [debugging](#debugging)
 ---
 
 # Case    
@@ -128,7 +129,88 @@
     * FFT의 출력은 obj_VS->pVitalSigns_SpectrumCplx
       ※ FFT 전 step에서 heartRateEst_peakCount/breathingRateEst_peakCount를 계산하는데, 두 값은 최종적으로 사용되지 않음
    
+---  
 
+# debugging  
+
+## SNR 저하 현상
+-심박수 추정값이 58에서 54, 51 등으로 계단식 하락(실제 심박의 하락이 아니라 신호가 약해져서 알고리즘이 주파수 피크를 놓치거나 호흡 하모닉(Harmonic)에 잠시 갇히는 신호 약화(SNR 저하) 현상)
+
+### 1. 주요 원인
+- 신호 강도 저하 (Weak Signal): 대상이 정지해 있더라도 미세한 자세 변경, 호흡 강도 변화 등으로 인해 레이더가 감지하는 흉부 변위(0.2~0.5mm)가 작아지면 신호가 약해져 주파수 피크를 정확히 찾지 못합니다.
+- 알고리즘의 주파수 피크 이탈: 심박수 추정 알고리즘은通常 FFT 기반의 피크 검색을 사용하는데, 신호가 약해지면 실제 심박 주파수가 아닌 다른 주변 노이즈나 낮은 주파수 대역을 1차 Peak로 인식하여 값이 튀거나 단계적으로 낮아질 수 있습니다.
+- 호흡 하모닉의 영향: 호흡은 심박보다 신호가 매우 강하여 호흡의 고조파(Harmonic)가 심박 주파수 대역(약 0.8~2.0Hz)으로 넘어와 실제 심박 신호를 마스킹(Masking)할 때, 알고리즘이 이를 심박으로 잘못 인식하여 낮은 값으로 수렴할 수 있습니다. 
+
+### 2. Solutions
+- 소프트웨어 설정 수정 (TI Demo):
+   + Frame Rate 조정: 프레임율을 낮춰 한 프레임당 축적되는 에너지를 높이면 정지 상태의 심박 신호 SNR을 개선할 수 있습니다.
+   + Threshold(임계값) 조정: ti/demo 설정에서 Vital Signs 감지 임계값을 낮추거나, 정지 상태를 1차로 확인하는 로직을 강화합니다.
+- 알고리즘 개선:
+   + VMD (Variational Mode Decomposition) 적용: 단순히 FFT를 사용하는 대신 신호를 VMD로 분해하여 심박 특정 성분만 추출하면 하모닉 노이즈 제거 가능
+   + Moving Average/Tracking 적용: 일시적인 계단식 하락을 막기 위해 추정된 심박수에 Kalman 필터나 이동 평균 필터를 적용하여 값을 평활화합니다. 
+
+## 신호 이상치 탐지
+- 심박수가 갑자기 98.14 BPM으로 튀는 구간이 발생합니다. 이는 전형적인 주파수 중첩(Aliasing)이나 배음(Harmonics) 현상으로, 실제 심박의 약 2배 근처 혹은 전혀 다른 노이즈를 심박으로 오인
+
+### 1. 
+
+### 2. Solutions
+- median filter, moving average를 결합한 방식, 생리학적 임계치를 활용
+- 레이더 특화 노이즈를 제어하기 위해 대역 통과 필터(Bandpass Filter)와 호흡 신호 제거(Harmonic Cancellation)를 포함한 정밀 필터 (버터워스 BPM)
+
+   + 1. 버터워스 대역 통과 필터 (Bandpass Filter)  
+	```
+	# ##python
+	from scipy.signal import butter, filtfilt
+
+	def bandpass_filter(data, lowcut=0.8, highcut=2.5, fs=20):
+    	    """
+    	    레이더 데이터용 대역 통과 필터
+    	    fs: 샘플링 주파수 (레이더 사양에 맞게 조정 필요)
+    	    """
+    	    nyquist = 0.5 * fs
+    	    low = lowcut / nyquist
+    	    high = highcut / nyquist
+    	    b, a = butter(4, [low, high], btype='band')
+
+    	    return filtfilt(b, a, data)
+	```  
+
+   + 2. Adaptive Filter  
+	```
+	from scipy.signal import iirnotch
+	
+	def remove_breathing_harmonics(data, breathing_rate_hz, fs=20):
+	    ```
+	    호흡 주파수의 2배수(고조파) 지점을 제거하는 노치 필터
+	    ```
+	    harmonic_2 = breathing_rate_hz * 2
+	    b, a = iirnotch(harmonic_2, Q=30, fs=fs)
+
+	    return filtfilt(b, a, data)
+	```
+
+	```
+	# ## 튀는 값을 잡는 최종 로직
+	import numpy as np
+
+	def process_radar_bpm(raw_signal, fs=20):
+	    # 1. 신호 전처리 (대역 통과 필터)
+	    clean_signal = bandpass_filter(raw_signal, fs=fs)
+    
+	    # 2. 피크 검출 후 BPM 계산 (예시 로직)
+	    # distance = fs / (max_bpm/60)
+	    # peaks, _ = find_peaks(clean_signal, distance=fs/2.5) 
+	    # calculated_bpm = calculate_bpm(peaks)
+    
+	    # 3. 이상치 보정 (Median Filter + Z-Score)
+	    # 이전 답변의 Median 필터를 적용하여 98.14와 같은 Aliasing 제거
+
+	    return final_filtered_bpm
+    ```
+
+ ## 데이터 고착(Freezing)
+ - 알고리즘이 로직 오류로 인해 이전 결과에 갇혀(Stuck) 있음 
 
 
 
