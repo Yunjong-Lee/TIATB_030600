@@ -87,38 +87,39 @@
   - 의미: 알고리즘이 여러 지표를 종합해 계산한 '자신감' 점수입니다. 보통 이 값이 특정 임계값(Threshold) 미만이면 FFT 결과가 아무리 선명해도 화면에 표시하지 않도록 로직을 짭니다.
 
 ## D. heartRateEst_xCorr 
-- 교차 상관 계수
-  + FFT는 주파수 도메인만 보지만, xCorr(Cross-correlation)은 시간 도메인에서 신호의 주기성이 얼마나 일정한지를 나타낸다
-  + 특징  
-    * FFT 피크가 있더라도 신호의 모양이 불규칙하면 xCorr 값이 낮게 나온다.
-    * heartRateEst_FFT와 heartRateEst_xCorr가 가리키는 주파수가 일치할 때만 True로 판정시 오검출율 감소
+   - 교차 상관 계수
+     + FFT는 주파수 도메인만 보지만, xCorr(Cross-correlation)은 시간 도메인에서 신호의 주기성이 얼마나 일정한지를 나타낸다
+     + 특징  
+       * FFT 피크가 있더라도 신호의 모양이 불규칙하면 xCorr 값이 낮게 나온다.
+       * heartRateEst_FFT와 heartRateEst_xCorr가 가리키는 주파수가 일치할 때만 True로 판정시 오검출율 감소
 
 ## E. sumEnergyHeartWfm
-- heartRateEst_FFT가 불안정할 때, "노이즈를 포함한 전체 에너지"의 합과의 비율 확인 필요  
-  ※ 심박 대역에 에너지가 충분히 들어오는지 확인 (사람이 있는지 확인)  
-  $SNR_{Heart} = \displaystyle \frac{heartRateEst\_HarmonicEnergy}{sumEnergyHeartWfm}$  
-  + 비율이 높을 때: 신호 중에서 심박 고조파 성분이 지배적(FFT 값 신뢰도가 높음)  
-  + 비율이 낮을 때: 신호에 Clutter나 Motion이 섞여 있어 심박 성분이 묻힌 상태(FFT 값 제거 필요)  
-  + heartRateEst_HarmonicEnergy : 필터(HPF or BPF)를 거친 후의 심박 Waveform 전체 에너지 ("유효한 성분"의 합)  
-  + sumEnergyHeartWfm : "노이즈를 포함한 전체 에너지"의 합    
+   - 심장 박동 파라미터에서 추출된 에너지의 총합(레이더가 측정한 심박 파형 신호의 강도나 안정성을 수치화한 데이터)
+   - 용도 :
+     + 신호의 quality 판단
+     + 심박수 산출 전, 유효한 심박 성분이 충분한지 검증하는 지표
+       
+   ※ heartRateEst_FFT가 불안정할 때, "노이즈를 포함한 전체 에너지"의 합과의 비율 확인을 통해 심박 대역에 에너지가 충분히 들어오는지(사람이 있는지) 확인  
+     $SNR_{Heart} = \displaystyle \frac{heartRateEst\_HarmonicEnergy}{sumEnergyHeartWfm}$  
+     + 비율이 높을 때: 신호 중에서 심박 고조파 성분이 지배적(FFT 값 신뢰도가 높음)  
+     + 비율이 낮을 때: 신호에 Clutter나 Motion이 섞여 있어 심박 성분이 묻힌 상태(FFT 값 제거 필요)  
+     + heartRateEst_HarmonicEnergy : 필터(HPF or BPF)를 거친 후의 심박 Waveform 전체 에너지 ("유효한 성분"의 합)  
+     + sumEnergyHeartWfm : "노이즈를 포함한 전체 에너지"의 합    
 
 ## F. confidenceMetricHeartOut  
-- $SNR_{Heart}$ 비율과 Peak의 선명도를 종합해 최종 점수 도출.  
+   - $SNR_{Heart}$ 비율과 Peak의 선명도를 종합해 최종 점수 도출.  
 
 ## G. outputFilterBreathOut, outputFilterHeartOut  
-- doppler input 데이터로부터 위상 추출(atan) >> unwrap >> impulse noise 제거 결과 (phaseUsedComputation)를 IIR 필터 입력으로 전달하여 filtering된 결과값 (time domain의 신호임)   
-  + 필터 출력 신호의 특성   
-    * outputFilterBreathOut: 호흡 대역(약 0.1~0.5Hz) 통과 신호. 진폭이 크며 파형이 완만   
-    * utputFilterHeartOut: 심박 대역(약 0.8~2.0Hz) 통과 신호. 호흡에 비해 진폭이 매우 작으며 미세한 진동 형태   
-    → 이 두 신호로 호흡과 심박 추출  
-
-- filter 출력(outputFilterHeartOut/outputFilterBreathOut) 신호는  
-  + heart & breathing wfm을 circular buf에 outputFilterHeartOut & outputFilterBreathOut을 buf size (vitalSignCfg의 winLen-1) 만큼 누적, 마지막 buf에 최신 data copy  
-    ※ circular Buffer : obj_VS->pVitalSigns_Heart_circularBuffer/pVitalSigns_Breath_circularBuffer  
+   - doppler input 데이터로부터 위상 추출(atan) >> unwrap >> impulse noise 제거 결과 (phaseUsedComputation)를 IIR 필터 입력으로 전달하여 filtering된 결과값 (time domain의 신호임)   
+     + 필터 출력 신호의 특성   
+       * outputFilterBreathOut: 호흡 대역(약 0.1~0.5Hz) 통과 신호. 진폭이 크며 파형이 완만   
+       * utputFilterHeartOut: 심박 대역(약 0.8~2.0Hz) 통과 신호. 호흡에 비해 진폭이 매우 작으며 미세한 진동 형태   
+       → 이 두 신호로 호흡과 심박 추출  
+   
+   - filter 출력(outputFilterHeartOut/outputFilterBreathOut) 신호는  
+     + heart & breathing wfm을 circular buf에 outputFilterHeartOut & outputFilterBreathOut을 buf size (vitalSignCfg의 winLen-1) 만큼 누적, 마지막 buf에 최신 data copy  
+       ※ circular Buffer : obj_VS->pVitalSigns_Heart_circularBuffer/pVitalSigns_Breath_circularBuffer  
  
-
-
-
 
 
   + cardiac/Breath wfm을 구성하는 에 된다.
