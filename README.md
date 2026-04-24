@@ -96,7 +96,7 @@
 ## E. sumEnergyHeartWfm
 - heartRateEst_FFT가 불안정할 때, "노이즈를 포함한 전체 에너지"의 합과의 비율 확인 필요  
   ※ 심박 대역에 에너지가 충분히 들어오는지 확인 (사람이 있는지 확인)
-  $SNR_{Heart} = \frac{heartRateEst\_HarmonicEnergy}{sumEnergyHeartWfm}$  
+  $SNR_{Heart} = \Large \frac{heartRateEst\_HarmonicEnergy}{sumEnergyHeartWfm}$  
   + 비율이 높을 때: 신호 중에서 심박 고조파 성분이 지배적(FFT 값 신뢰도가 높음)
   + 비율이 낮을 때: 신호에 Clutter나 Motion이 섞여 있어 심박 성분이 묻힌 상태(FFT 값 제거 필요)  
   + heartRateEst_HarmonicEnergy : 필터(HPF or BPF)를 거친 후의 심박 Waveform 전체 에너지 ("유효한 성분"의 합)  
