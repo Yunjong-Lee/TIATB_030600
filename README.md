@@ -3,17 +3,17 @@
 # fVS+rOD, output value check
 
 # INDEX  
-1. [Case Study](#Case-Study)  
-&ensp; 1-1. [event case](#A-event-case)  
-&ensp; 1-2. [Key Value](#B-Key-values)  
+1. [Case Study](#1-Case-Study)  
+&ensp; 1-1. [event case](#1-1-event-case)  
+&ensp; 1-2. [Key Value](#1-2-Key-values)  
 
-2. [output values](#output-values)  
-&ensp; 2-1. [heartRateEst_HarmonicEnergy](#A-heartRateEst_HarmonicEnergy)  
-&ensp; 2-2. [heartRateEst_FFT_4Hz](#B-heartRateEst_FFT_4Hz)  
-&ensp; 2-3. [confidenceMetricHeartOut](#C-confidenceMetricHeartOut)  
-&ensp; 2-4. [heartRateEst_xCorr](#D-heartRateEst_xCorr)  
-&ensp; 2-5. [sumEnergyHeartWfm](#E-sumEnergyHeartWfm)  
-&ensp; 2-6. [confidenceMetricHeartOut](#F-confidenceMetricHeartOut)  
+2. [output values](#2-output-values)  
+&ensp; 2-1. [heartRateEst_HarmonicEnergy](#2-1-heartRateEst_HarmonicEnergy)  
+&ensp; 2-2. [heartRateEst_FFT_4Hz](#2-2-heartRateEst_FFT_4Hz)  
+&ensp; 2-3. [confidenceMetricHeartOut](#2-3-confidenceMetricHeartOut)  
+&ensp; 2-4. [heartRateEst_xCorr](#2-4-heartRateEst_xCorr)  
+&ensp; 2-5. [sumEnergyHeartWfm](#2-5-sumEnergyHeartWfm)  
+&ensp; 2-6. [confidenceMetricHeartOut](#2-6-confidenceMetricHeartOut)  
 
 3. [debugging](#debugging)
 ---
@@ -71,10 +71,10 @@
 [^VS_PARAMS_2]: [https://my.clevelandclinic.org](https://my.clevelandclinic.org/health/articles/10881-vital-signs)
 [^VS_PARAMS_3]: [https://www.researchgate.net](https://www.researchgate.net/publication/364141837_Vital_Sign_Detection_via_Angular_and_Range_Measurements_with_mmWave_MIMO_Radars_Algorithms_and_Trials)
 
-## 2-2_1. heartRateEst_FFT
+## 2-2. heartRateEst_FFT
   - 심박 측정 가능 대역(보통 0.6Hz ~ 4.0Hz)에서 FFT를 수행하여 가장 강한 에너지를 가진 주파수 피크를 심박수로 변환한 값
   - 
-## 2-2_2. heartRateEst_FFT_4Hz
+## 2-3. heartRateEst_FFT_4Hz
   - 4Hz(240 BPM)까지의 고주파 대역을 포함하여 계산된 추정치
   - 용도
     + 고차 고조파(Harmonics) 확인
@@ -102,19 +102,43 @@
     + 데이터 업데이트 주기: heartRateEst_FFT_4Hz가 실시간으로 변하는지, 아니면 일정 시간(window) 동안의 평균값인지 확인
     + 측정 대상이 레이더 정면에 있는지, 주변에 팬(Fan)이나 진동체 등 레이더 신호를 방해하는 요소가 없는지 확인
 
-## 2-2-3. confidenceMetricHeartOut
+## 2-4. confidenceMetricHeartOut
   - 용도: 최종 합격/불합격 판독기.
   - 의미: 알고리즘이 여러 지표를 종합해 계산한 '자신감' 점수입니다. 보통 이 값이 특정 임계값(Threshold) 미만이면 FFT 결과가 아무리 선명해도 화면에 표시하지 않도록 로직을 짭니다.
 
-## 2-2-4. heartRateEst_xCorr 
+## 2-5. heartRateEst_xCorr 
    - 교차 상관 계수
      + FFT는 주파수 도메인만 보지만, xCorr(Cross-correlation)은 시간 도메인에서 신호의 주기성이 얼마나 일정한지를 나타낸다
      + 특징  
        * FFT 피크가 있더라도 신호의 모양이 불규칙하면 xCorr 값이 낮게 나온다.
        * heartRateEst_FFT와 heartRateEst_xCorr가 가리키는 주파수가 일치할 때만 True로 판정시 오검출율 감소
 
-## 2-2-5. sumEnergyHeartWfm
+## 2-6. sumEnergyHeartWfm
    - 심장 박동 파라미터에서 추출된 에너지의 총합(레이더가 측정한 심박 파형 신호의 강도나 안정성을 수치화한 데이터)
+     심박 신호의 에너지 값을 계산할 때 과거의 에너지 값과 현재 측정된 에너지 값을 일정 비율로 섞어서 결과값을 부드럽게 한다(Exponential Smoothing을 수행)
+
+   	  ```
+      # 260428_10563856_Vital 굘과 값:
+      
+      |   AVG       |   Median      |   Max         |   Min         |  stdev.p      |
+      |---          |---            |---            |---            |---            |  
+      | 203.8298027 | 227.636718750 | 237.890625000 | 104.589843750 | 56.68148219   |
+
+      ㅁ 판정 	: 신뢰하기 어렵거나 매우 불안정한 상태로, 최댓값이 최솟값보다 8배 이상 (신호의 세기가 요동치는 중)
+       			: Min(41.3) 근처일 때: 신호가 너무 약해 심박 추정값(bpm)을 믿을 수 없는 상태
+      			: Max(335.8) 근처일 때: 신호는 강하지만 노이즈일 확률이 매우 높음     
+      			: 측정 데이터의 신뢰도가 매우 낮음 (STDEV.P = 56.68)
+      ㅁ 원인	: 에너지가 100 이상인데 심박수가 비정상적이라면, 심박이 아닌 외부 진동(노이즈)을 센서가 "확실한 신호"로 오인
+      			: 현재 데이터에 너무 높은 가중치(alpha)를 주어 필터링 역할을 거의 못 하고 있음
+      ㅁ 확인	: 가중치 조정 수 재 확인 ← 가중치는 이미 0.05이므로 확인 불필요
+      			: 빈 공간을 측정했을 때도 에너지 값이 100 근처에서 요동치는지 확인 필요
+      			: USB 전원 대신 외부 전원 사용
+
+      * alpha	: breath(0.1), heart(0.05)
+      			: alpha = 0.1은 직전 데이터의 90%를 유지하고 새 데이터를 10%만 반영하는 strong filter임
+      
+      ```  
+	 
    - 용도 :
      + 신호의 quality 판단
      + 심박수 산출 전, 유효한 심박 성분이 충분한지 검증하는 지표
@@ -126,10 +150,10 @@
      + heartRateEst_HarmonicEnergy : 필터(HPF or BPF)를 거친 후의 심박 Waveform 전체 에너지 ("유효한 성분"의 합)  
      + sumEnergyHeartWfm : "노이즈를 포함한 전체 에너지"의 합    
 
-## 2-2-6. confidenceMetricHeartOut  
+## 2-7. confidenceMetricHeartOut  
    - $SNR_{Heart}$ 비율과 Peak의 선명도를 종합해 최종 점수 도출.  
 
-## 2-2-7. outputFilterBreathOut, outputFilterHeartOut  
+## 2-8. outputFilterBreathOut, outputFilterHeartOut  
    - doppler input 데이터로부터 위상 추출(atan) >> unwrap >> impulse noise 제거 결과 (phaseUsedComputation)를 IIR 필터 입력으로 전달하여 filtering된 결과값 (time domain의 신호임)   
      + 필터 출력 신호의 특성   
        * outputFilterBreathOut: 호흡 대역(약 0.1~0.5Hz) 통과 신호. 진폭이 크며 파형이 완만   
@@ -139,8 +163,6 @@
    - filter 출력(outputFilterHeartOut/outputFilterBreathOut) 신호는  
      + heart & breathing wfm을 circular buf에 outputFilterHeartOut & outputFilterBreathOut을 buf size (vitalSignCfg의 winLen-1) 만큼 누적, 마지막 buf에 최신 data copy  
        ※ circular Buffer : obj_VS->pVitalSigns_Heart_circularBuffer/pVitalSigns_Breath_circularBuffer  
- 
-
 
   + cardiac/Breath wfm을 구성하는 에 된다.
     * 각각의 buffer data에 scale factor를 곱한 결과 값을 obj_VS->pVitalSignsBuffer_Cplx buffer에 재구성
@@ -150,7 +172,7 @@
    
 ---  
 
-# debugging  
+# 3. debugging  
 
 ## SNR 저하 현상
 -심박수 추정값이 58에서 54, 51 등으로 계단식 하락(실제 심박의 하락이 아니라 신호가 약해져서 알고리즘이 주파수 피크를 놓치거나 호흡 하모닉(Harmonic)에 잠시 갇히는 신호 약화(SNR 저하) 현상)
