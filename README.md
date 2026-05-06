@@ -53,7 +53,7 @@
 
 # output values  
 ## A. heartRateEst_HarmonicEnergy  
-- 심장 박동 신호의 Harmonics 성분들이 가진 에너지의 총합(심박수 추정 신뢰도 판단 지표)
+- 심장 박동 신호의 Harmonics 성분들이 가진 에너지의 총합(심박수 추정 신뢰도 판단 지표)  
   ※ 에너지 중 규칙적인 고조파 성분이 얼마나 되는지 확인  
 - 특징
   + 계산된 상대적인 에너지 강도
