@@ -5,7 +5,7 @@
 # INDEX  
 1. [Case](#Case)  
 &ensp; A. [event case](#A-event-case)  
-&ensp; B. [considering value](#B-considering-value)  
+&ensp; B. [Output values](#B-Output-values)  
 
 2. [output values](#output-values)  
 &ensp; A. [heartRateEst_HarmonicEnergy](#A-heartRateEst_HarmonicEnergy)  
@@ -18,7 +18,7 @@
 3. [debugging](#debugging)
 ---
 
-# Case    
+# Case Study  
 ## A. event case
    1. 에너지 조건: heartRateEst_HarmonicEnergy > Threshold  
    2. 안정성 조건: heartRateEst_FFT와 heartRateEst_xCorr의 차이가 5bpm 이내  
@@ -26,7 +26,7 @@
    4. 연속성 조건: 현재 값과 직전 평균값의 차이가 합리적 범위 내 
    ※ 현상이 Outlier/측정값이 고정되어 안 움직이는 경우, 증상에 따라 지표 중 우선순위가 달라짐.  
 
-## B. considering value
+## B. Output Values
 ### heartRateEst_FFT vs breathingRateEst_FFT
 - 호흡 신호 대 심박 신호의 비율(SNR)
   + 심박수는 Breathing 신호의 고조파에 묻히는 경우가 많다. 호흡 에너지(breathingEst_FFT)가 너무 강하면 심박 FFT 값은 왜곡된다(Breath Rate 관련 Clutter 여부)  
