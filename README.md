@@ -4,55 +4,55 @@
 
 # INDEX  
 1. [Case Study](#Case-Study)  
-&ensp; A. [event case](#A-event-case)  
-&ensp; B. [Key Value](#B-Key-values)  
+&ensp; 1-1. [event case](#A-event-case)  
+&ensp; 1-2. [Key Value](#B-Key-values)  
 
 2. [output values](#output-values)  
-&ensp; A. [heartRateEst_HarmonicEnergy](#A-heartRateEst_HarmonicEnergy)  
-&ensp; B. [heartRateEst_FFT_4Hz](#B-heartRateEst_FFT_4Hz)  
-&ensp; C. [confidenceMetricHeartOut](#C-confidenceMetricHeartOut)  
-&ensp; D. [heartRateEst_xCorr](#D-heartRateEst_xCorr)  
-&ensp; E. [sumEnergyHeartWfm](#E-sumEnergyHeartWfm)  
-&ensp; F. [confidenceMetricHeartOut](#F-confidenceMetricHeartOut)  
+&ensp; 2-1. [heartRateEst_HarmonicEnergy](#A-heartRateEst_HarmonicEnergy)  
+&ensp; 2-2. [heartRateEst_FFT_4Hz](#B-heartRateEst_FFT_4Hz)  
+&ensp; 2-3. [confidenceMetricHeartOut](#C-confidenceMetricHeartOut)  
+&ensp; 2-4. [heartRateEst_xCorr](#D-heartRateEst_xCorr)  
+&ensp; 2-5. [sumEnergyHeartWfm](#E-sumEnergyHeartWfm)  
+&ensp; 2-6. [confidenceMetricHeartOut](#F-confidenceMetricHeartOut)  
 
 3. [debugging](#debugging)
 ---
 
-# Case Study  
-## A. event case
+# 1. Case Study  
+## 1-1. event case
    1. 에너지 조건: heartRateEst_HarmonicEnergy > Threshold  
    2. 안정성 조건: heartRateEst_FFT와 heartRateEst_xCorr의 차이가 5bpm 이내  
    3. 신뢰도 점수: confidenceMetricHeartOut > Threshold  
    4. 연속성 조건: 현재 값과 직전 평균값의 차이가 합리적 범위 내 
    ※ 현상이 Outlier/측정값이 고정되어 안 움직이는 경우, 증상에 따라 지표 중 우선순위가 달라짐.  
 
-## B. Key Values
-### B-1. heartRateEst_FFT vs breathingRateEst_FFT
+## 1-2. Key Values
+### 1-2-1. heartRateEst_FFT vs breathingRateEst_FFT
 - 호흡 신호 대 심박 신호의 비율(SNR)
   + 심박수는 Breathing 신호의 고조파에 묻히는 경우가 많다. 호흡 에너지(breathingEst_FFT)가 너무 강하면 심박 FFT 값은 왜곡된다(Breath Rate 관련 Clutter 여부)  
 
-### B-2. Phase Unwrapping Quality (신호 파형 상태)
+### 1-2-2. Phase Unwrapping Quality (신호 파형 상태)
 - FFT 전 단계의 Phase 신호가 깨끗한지 확인 필요  
   (target이 미세한 움직임이 있다면 위상 신호 자체가 튀어 FFT는 무의미)  
   ※ heartRateEst_HarmonicEnergy와 confidenceMetricHeartOut이 동시에 낮은데 heartRateEst_FFT만 높게 나온다면, 결과 값은 Artifact  
   ※ heartRateEst_FFT 값은 일정한데 Confidence만 요동치는 상황인가? 아니면 값이 아예 엉뚱한 대역으로 튀는 상황인가?  
 
-### B-3. sumAllSpectralEnergy (=sumEnergyHeartWfm) 대비 비율 (SNR)  
+### 1-2-3. sumAllSpectralEnergy (=sumEnergyHeartWfm) 대비 비율 (SNR)  
 - 심박수 관련 처리 범위 내에서의 전체 에너지  
 - 심박 대역의 에너지가 높고, 전체 노이즈(Clutter) 에너지도 같이 높으면 신뢰도가 낮다.  
 - 전체 에너지 대비 심박 고조파 에너지 비율 계산  
   $Rate = \displaystyle \frac{heartRateEst_HarmonicEnergy} {sumAllSpectralEnergy}$  
   + 비율이 낮으면, 현재 환경에 움직임 or 노이즈가 많다는 뜻  
 
-### B-4. numMovingAvgFilter (지수 이동 평균의 편차)  
+### 1-2-4. numMovingAvgFilter (지수 이동 평균의 편차)  
 - 심박수는 생체 특성상 1~2초 사이에 급격한 점프는 발생하기 어렵다(예: 70bpm → 110bpm으로 점프).  
 - 직전 프레임들의 평균값과 현재 FFT 값의 차이 (Delta)  
   * delta > threshold(예: 10bpm) : 결과 값의 신뢰도를 낮춘다 (이전 값을 유지 or confidenceMetric을 강제로 낮추는 로직 필요)  
 
 ---
 
-# output values  
-## A. heartRateEst_HarmonicEnergy  
+# 2. output values  
+## 2-1. heartRateEst_HarmonicEnergy  
 - 심장 박동 신호의 Harmonics 성분들이 가진 에너지의 총합(심박수 추정 신뢰도 판단 지표)  
   ※ 에너지 중 규칙적인 고조파 성분이 얼마나 되는지 확인  
 - 특징
@@ -71,30 +71,49 @@
 [^VS_PARAMS_2]: [https://my.clevelandclinic.org](https://my.clevelandclinic.org/health/articles/10881-vital-signs)
 [^VS_PARAMS_3]: [https://www.researchgate.net](https://www.researchgate.net/publication/364141837_Vital_Sign_Detection_via_Angular_and_Range_Measurements_with_mmWave_MIMO_Radars_Algorithms_and_Trials)
 
-## B_1. heartRateEst_FFT
+## 2-2_1. heartRateEst_FFT
   - 심박 측정 가능 대역(보통 0.6Hz ~ 4.0Hz)에서 FFT를 수행하여 가장 강한 에너지를 가진 주파수 피크를 심박수로 변환한 값
   - 
-## B_2. heartRateEst_FFT_4Hz
+## 2-2_2. heartRateEst_FFT_4Hz
   - 4Hz(240 BPM)까지의 고주파 대역을 포함하여 계산된 추정치
-  - 용도: 고차 고조파(Harmonics) 확인.
-  - 의미: 기본 심박수 대역(약 1~2Hz) 외에 4Hz 부근의 에너지를 확인하여, 현재 잡힌 피크가 실제 심장 박동의 배수 성분인지 아니면 외부 진동 노이즈인지 교차 검증할 때 사용
+  - 용도
+    + 고차 고조파(Harmonics) 확인
+    + 계산량이 적고 빠른 처리 시에 활용 (heartRateEst_xCorr (교차 상관 함수 기반)가 더 정확함)
+      
+   	  ```
+      # 260428_10563856_Vital 굘과 값:
+      
+      |   AVG       |   Median      |   Max         |   Min         |  
+      |---          |---            |---            |---            |  
+      | 203.8298027 | 227.636718750 | 237.890625000 | 104.589843750 |
+
+      ㅁ 판정 	: 센서가 분석 가능한 최대치(4Hz = 240 bpm)에 거의 근접 → 고주파 노이즈를 심박으로 오인  
+      			: 가장 낮은 값조차 일반적인 휴식기 심박수보다 높
+      ㅁ 원인	: 측정 대상자가 미세하게 움직이거나 말을 하고 있을 경우
+      			: 센서 근처에 팬(Fan), 에어컨, 혹은 진동을 유발하는 기계적 장치가 있을 때
+      			: 센서가 피사체의 가슴 정면이 아닌 엉뚱한 곳을 향하고 있거나, 거리가 너무 멀어(보통 1~2m 권장) 신호 대 잡음비(SNR)가 낮은 상태
+      ㅁ 확인	: 함께 출력되는 heartRateEst_xCorr 값 확인하여 두 값이 서로 비슷할 때만 유효한 데이터로 처리
+      ```  
+  - 의미
+    + 기본 심박수 대역(약 1~2Hz) 외에 4Hz 부근(4회/sec & 240회/min)의 에너지를 확인하여 계산된 결과값
+    + 현재 잡힌 피크가 실제 심장 박동의 배수 성분인지 아니면 외부 진동 노이즈인지 교차 검증할 때 사용
   - 확인 사항
     + FFT 결과값의 피크가 주변 노이즈보다 충분히 높은지 확인
     + 데이터 업데이트 주기: heartRateEst_FFT_4Hz가 실시간으로 변하는지, 아니면 일정 시간(window) 동안의 평균값인지 확인
     + 측정 대상이 레이더 정면에 있는지, 주변에 팬(Fan)이나 진동체 등 레이더 신호를 방해하는 요소가 없는지 확인
 
-## C. confidenceMetricHeartOut
+## 2-2-3. confidenceMetricHeartOut
   - 용도: 최종 합격/불합격 판독기.
   - 의미: 알고리즘이 여러 지표를 종합해 계산한 '자신감' 점수입니다. 보통 이 값이 특정 임계값(Threshold) 미만이면 FFT 결과가 아무리 선명해도 화면에 표시하지 않도록 로직을 짭니다.
 
-## D. heartRateEst_xCorr 
+## 2-2-4. heartRateEst_xCorr 
    - 교차 상관 계수
      + FFT는 주파수 도메인만 보지만, xCorr(Cross-correlation)은 시간 도메인에서 신호의 주기성이 얼마나 일정한지를 나타낸다
      + 특징  
        * FFT 피크가 있더라도 신호의 모양이 불규칙하면 xCorr 값이 낮게 나온다.
        * heartRateEst_FFT와 heartRateEst_xCorr가 가리키는 주파수가 일치할 때만 True로 판정시 오검출율 감소
 
-## E. sumEnergyHeartWfm
+## 2-2-5. sumEnergyHeartWfm
    - 심장 박동 파라미터에서 추출된 에너지의 총합(레이더가 측정한 심박 파형 신호의 강도나 안정성을 수치화한 데이터)
    - 용도 :
      + 신호의 quality 판단
@@ -107,10 +126,10 @@
      + heartRateEst_HarmonicEnergy : 필터(HPF or BPF)를 거친 후의 심박 Waveform 전체 에너지 ("유효한 성분"의 합)  
      + sumEnergyHeartWfm : "노이즈를 포함한 전체 에너지"의 합    
 
-## F. confidenceMetricHeartOut  
+## 2-2-6. confidenceMetricHeartOut  
    - $SNR_{Heart}$ 비율과 Peak의 선명도를 종합해 최종 점수 도출.  
 
-## G. outputFilterBreathOut, outputFilterHeartOut  
+## 2-2-7. outputFilterBreathOut, outputFilterHeartOut  
    - doppler input 데이터로부터 위상 추출(atan) >> unwrap >> impulse noise 제거 결과 (phaseUsedComputation)를 IIR 필터 입력으로 전달하여 filtering된 결과값 (time domain의 신호임)   
      + 필터 출력 신호의 특성   
        * outputFilterBreathOut: 호흡 대역(약 0.1~0.5Hz) 통과 신호. 진폭이 크며 파형이 완만   
