@@ -3,7 +3,7 @@
 # fVS+rOD, output value check
 
 # INDEX  
-1. [Case](#Case)  
+1. [Case Study](#Case-Study)  
 &ensp; A. [event case](#A-event-case)  
 &ensp; B. [Output values](#B-Output-values)  
 
