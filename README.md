@@ -1,4 +1,4 @@
-# Automotive Toolbox 3.6.0
+<img width="89" height="187" alt="image" src="https://github.com/user-attachments/assets/7f1ce033-bcfb-4711-9d05-41a7ce6902f5" /># Automotive Toolbox 3.6.0
 
 # fVS+rOD, output value check
 
@@ -29,7 +29,9 @@
 ## 1-2. Key Values
 ### 1-2-1. heartRateEst_FFT vs breathingRateEst_FFT
 - 호흡 신호 대 심박 신호의 비율(SNR)
-  + 심박수는 Breathing 신호의 고조파에 묻히는 경우가 많다. 호흡 에너지(breathingEst_FFT)가 너무 강하면 심박 FFT 값은 왜곡된다(Breath Rate 관련 Clutter 여부)  
+  + 심박수는 Breathing 신호의 고조파에 묻히는 경우가 많으며, 호흡 에너지(breathingEst_FFT)가 너무 강하면 심박 FFT 값은 왜곡된다(Breath Rate 관련 Clutter 여부)  
+- confidenceMetric_HeartOut 신호로 신뢰도를 함께 파악한다
+  + 평균(0.48)과 중앙값(0.38)이 매우 낮다. (1.0~2.0 이상일 때 심박수(heartRateEst_FFT)를 유효한 데이터로 간주)
 
 ### 1-2-2. Phase Unwrapping Quality (신호 파형 상태)
 - FFT 전 단계의 Phase 신호가 깨끗한지 확인 필요  
