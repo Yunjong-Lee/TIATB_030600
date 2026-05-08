@@ -1,12 +1,12 @@
 
 # INDEX
 
-1. [Heart Rate estimation process in Radar Signal](#Heart-Rate-estimation-process-in-Radar-Signal)
-2. [filter_IIR_BiquadCascade](#filter_IIR_BiquadCascade)
-3. 
+1. [Heart Rate estimation process in Radar Signal](#1-Heart-Rate-estimation-process-in-Radar-Signal)
+2. [filter_IIR_BiquadCascade](#2-filter_IIR_BiquadCascade)
+3. [threshold filter](#3-threshold-filter)
 ---
 
-# Heart Rate estimation process in Radar Signal
+# 1. Heart Rate estimation process in Radar Signal
 - 위상 추출 → BPF → FFT → 피크 검출
   ```
   #include <stdio.h>
@@ -75,7 +75,7 @@
   + Zero-padding: 데이터 포인트가 적을 경우 N_FFT를 512나 1024로 크게 잡고 0을 채워 넣으면 주파수 해상도가 좋아집니다.  
 
 
-# filter_IIR_BiquadCascade
+# 2. filter_IIR_BiquadCascade
 ## 개요  
 - 레이더에서 수집된 Raw 신호(Phase Data)에서 호흡과 심박수에 해당하는 미세한 움직임 신호만을 추출하기 위해, 불필요한 노이즈를 제거하는 신호 처리(필터링) 역할
 - Biquad Cascade 구조 (2차 IIR 필터를 직렬로 연결)
@@ -91,4 +91,21 @@
   + samplingFreq : 레이더의 fps에 따라 결정되는 값(이 값이 변하면 동일한 coefficient에서도 필터링 대역이 달라짐)
   ※ 주파수 대역 변경은 이 coefficient를 변경(matlab등을 이용하여 신규로 생성)해야 한다.
 
+
+# 3. threshold filter
+
+- 260511B Test 필요
   
+```
+// 신뢰도가 특정 수준 이하일 때는 심박수 데이터를 업데이트하지 않음
+#define CONFIDENCE_THRESHOLD 0.8  // 최소 0.8 이상일 때만 데이터로 인정
+
+if (confidenceMetric_HeartOut > CONFIDENCE_THRESHOLD) {
+    // 신뢰도가 높을 때만 필터링 수행
+    final_BPM = (alpha * heartRateEst_FFT) + (1.0 - alpha) * prev_BPM;
+} else {
+    // 신뢰도가 낮으면 현재 값 무시 (홀드 상태)
+    final_BPM = prev_BPM; 
+}
+```  
+
