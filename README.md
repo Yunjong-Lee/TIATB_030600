@@ -1,4 +1,4 @@
-<img width="89" height="187" alt="image" src="https://github.com/user-attachments/assets/7f1ce033-bcfb-4711-9d05-41a7ce6902f5" /># Automotive Toolbox 3.6.0
+# Automotive Toolbox 3.6.0
 
 # fVS+rOD, output value check
 
