@@ -25,6 +25,22 @@
 profileCfg | 0 60 250 10 40 0 0 98 1 64 2200  0  0 40
 ───────────┴────────────────────────────────────────────
 ```
+- physical spec 
+  + start Freq. : 60GHz
+  + Freq. slope : 98MHz / $\mu s$
+  + ADC samples : 64
+  + sampling Freq : 2200ksps (2.2MHz)
+  + BW : 3.27 GHz (= 98MHz / $\mu \times$ (64 * 2200 MHz))
+  + idle time : 250 $\mus$
+- potential issues
+  + range resolution : 4.5 cm
+  + detection range (Max) : 3.3m
+  + slope : 매우 높은 값으로 설정됨 
+    → HW 최대 선형성 한계에 근접, noise 발생 유무 확인 필요
+  + 짧은 탐지 거리: 샘플 수(64)가 적고 샘플링 속도가 낮아 먼 거리의 물체는 감지되지 않거나 앨리어싱(Aliasing) 현상이 발생할 수 있음.
+  + 
+
+-  
 
 
 ## 1-2. frameCfg 0 3 128 0 200 1 0
