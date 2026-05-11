@@ -24,6 +24,20 @@
 ───────────┼────────────────────────────────────────────            
 profileCfg | 0 60 250 10 40 0 0 98 1 64 2200  0  0 40
 ───────────┴────────────────────────────────────────────
+
+1      Profile ID                보통 0부터 시작
+2      Start Freq        GHz     60~64GHz (6843 기준)
+3      Idle Time         µs      처프 사이의 휴식 시간 (너무 짧으면 멈춤 원인)
+4      ADC Start Time    µs      처프 시작 후 샘플링 대기 시간 (보통 5~10µs)
+5      Ramp End Time     µs      처프가 끝나는 시간 (중요: 샘플링 시간보다 길어야 함)
+6-7    TX Power/Phase    -       보통 0 설정
+8      Freq Slope        MHz/µs  주파수 변화율 (낮을수록 최대 거리 증가)
+9      TX Start Time     µs      보통 0
+10     ADC Samples       -       바이탈 추천: 256 / 512 / 1024
+11     Sample Rate       ksps    샘플링 속도 (921600 전송 시 2000~5000 권장)
+12-13  HPF Corners       -       고역 통과 필터 (노이즈 제거)
+14     RX Gain           dB      수신 감도 (보통 30~40dB)
+
 ```
 - physical spec 
   + start Freq. : 60GHz
