@@ -78,7 +78,7 @@ frameCfg   | 0 1 128 0 160 1 0
   ※ 도플러 chirp 수에 값 2를 원하는 경우, 도플러 DPU window 변경 (hanning window → rectangle window로)  
   (데모/객체 감지 DPC 소스 코드 업데이트)  
 
-  ※ [frameCfg의 세 번째 매개변수 "Number of loops"는 1~255 범위(mmwave_sdk_user_guide에서)값을 가진다. 하지만 값은 2의 거듭제곱이어야 하므로 설정 가능한 최대값은 128](https://e2e.ti.com/support/sensors-group/sensors/f/sensors-forum/667681/iwr1642-regarding-the-framecfg-and-subframecfg-parameters?ReplyFilter=Answers&ReplySortBy=Answers&ReplySortOrder=Descending)  
+  ※ [1 ~ 255 사이의 값을 사용할 수 있으나, 2의 거듭제곱이어야 함. 그러므로 설정가능한 최대 값은 128 임](https://e2e.ti.com/support/sensors-group/sensors/f/sensors-forum/667681/iwr1642-regarding-the-framecfg-and-subframecfg-parameters?ReplyFilter=Answers&ReplySortBy=Answers&ReplySortOrder=Descending)  
 
 
 
