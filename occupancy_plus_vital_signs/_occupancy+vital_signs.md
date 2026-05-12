@@ -58,19 +58,28 @@ profileCfg | 0 60 250 10 40 0 0 98 1 64 2200  0  0 40
 - Ramp End Time ($\mu s$) : rampEndTime must be greater than the sum of the adcStartTime and chirpTime
 
 
-## 1-2. frameCfg 0 3 128 0 200 1 0
+## 1-2. frameCfg 0 1 64 0 100 1 0 // frameCfg 0 1 128 0 200 1 0
 ```
 ───────────┬────────────────────────────────────────────
            | 1 2  3  4  5  6 7 
 ───────────┼────────────────────────────────────────────            
 frameCfg   | 0 1 128 0 160 1 0
 ───────────┴────────────────────────────────────────────
+
+1. Start Chirp Index
+2. End Chirp Index
+3. Number of Loops
+4. Reserved
+5. Frame Periodicity
+6. Trigger Select
+7. Frame Trigger Delay
+
 ```
 
-+ frameCfg는 프레임 전송 간격을 제어하는 ​​데 사용된다.  
++ frameCfg : 프레임 전송 간격 제어용  
   ※ [frameCfg 명령은 밀리초 단위로 프레임 주기를 가져온다](https://e2e.ti.com/support/sensors-group/sensors/f/sensors-forum/656350/iwr1443-the-configure-profile-of-the-vital-sign-lab)  
   ※ mmwavelink[^mmWaveLink]로 전송되기 위해 rlSetFrameCfg[^rlSetFrameCfg]를 호출.   
-  프레임 주기의 각 LSB는 5ns(mmwavelink doxygen 설명서,  "../mmwave_sdk_01_01_00_02/packages/ti/control/mmwavelink/docs/doxygen/html/group___sensor.html#gaf1e5cbc25891714db321da3bfa0d2014")
+  프레임 주기의 각 LSB는 5ns([mmwavelink doxygen 설명서]("../mmwave_sdk_01_01_00_02/packages/ti/control/mmwavelink/docs/doxygen/html/group___sensor.html#gaf1e5cbc25891714db321da3bfa0d2014")
   기본적으로 CLI의 frameCfg 명령은 ms 단위의 값을 취하며, CLI 핸들러 함수에서 하드웨어 요구 값으로 변환된다.  
 
 + Number of loops
