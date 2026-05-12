@@ -44,6 +44,7 @@ profileCfg | 0 60 250 10 40 0 0 98 1 64 2200  0  0 40
   + Freq. slope : 98MHz / $\mu s$
   + ADC samples : 64
   + sampling Freq : 2200ksps (2.2MHz)
+    * 2.0 MHz 이상 권장, mmwave Sensing Estimator tool에서 확인 가능
   + BW : 3.27 GHz (= 98MHz / $\mu \times$ (64 * 2200 MHz))
   + idle time : 250 $\mu s$
 - potential issues
